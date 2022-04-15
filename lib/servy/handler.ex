@@ -1,4 +1,6 @@
 defmodule Servy.Handler do
+  use Servy.Routes
+
   def handle(request) do
     request
     |> parse
@@ -52,26 +54,6 @@ defmodule Servy.Handler do
       true ->
         %{response: %{status: 405, body: "only GET and POST are supported"}}
     end
-  end
-
-  def get("/coffee", _headers) do
-    %{response: %{status: 200, body: "Espresso, Latte, Cappuccino"}}
-  end
-
-  def get("/coffee/" <> id, _headers) do
-    %{response: %{status: 200, body: "Coffee: #{id}"}}
-  end
-
-  def get(path, _headers) do
-    %{response: %{status: 404, body: "#{path} not found"}}
-  end
-
-  def post("/coffee", _headers) do
-    %{response: %{status: 501, body: ""}}
-  end
-
-  def post(path, _headers) do
-    %{response: %{status: 404, body: "#{path} not found"}}
   end
 
   def format(%{:response => response}) do
