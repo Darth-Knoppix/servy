@@ -33,7 +33,7 @@ defmodule ServyHandlerTest do
       """
 
       expected_response = """
-      HTTP/1.1 404 OK
+      HTTP/1.1 404 Not Found
       Content-Type: text/html
       Content-Length: 22
 
