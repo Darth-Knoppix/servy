@@ -2,9 +2,8 @@ defmodule Servy.Handler do
   def handle(request) do
     request
     |> parse
-
-    # |> route
-    # |> format
+    |> route
+    |> format
   end
 
   def parse(request) do
@@ -14,6 +13,7 @@ defmodule Servy.Handler do
     Map.merge(parse_request_line(request_line), parse_headers(headers_and_body))
   end
 
+  @spec parse_request_line(binary) :: %{method: binary, path: binary, protocol: binary}
   def parse_request_line(request_line) do
     [method, path, protocol] = String.split(request_line, " ")
     %{method: method, path: path, protocol: protocol}
@@ -31,15 +31,29 @@ defmodule Servy.Handler do
     %{headers: headers, body: Enum.join(raw_body, "\n")}
   end
 
-  def route() do
+  def route(request) do
+    cond do
+      %{method: "GET", path: "/something"} ->
+        %{response: %{status: 200, body: "Bears, Lions, Tigers"}}
+
+      true ->
+        %{response: %{status: 404}}
+    end
   end
 
-  def format() do
+  def format(%{:response => response}) do
+    """
+    HTTP/1.1 #{response[:status]} OK
+    Content-Type: text/html
+    Content-Length: #{String.length(response[:body])}
+
+    #{response[:body]}
+    """
   end
 end
 
 request = """
-GET /somthing HTTP/1.1
+GET /something HTTP/1.1
 Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
