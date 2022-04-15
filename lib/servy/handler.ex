@@ -58,6 +58,10 @@ defmodule Servy.Handler do
     %{response: %{status: 200, body: "Espresso, Latte, Cappuccino"}}
   end
 
+  def get("/coffee/" <> id, _headers) do
+    %{response: %{status: 200, body: "Coffee: #{id}"}}
+  end
+
   def get(path, _headers) do
     %{response: %{status: 404, body: "#{path} not found"}}
   end
