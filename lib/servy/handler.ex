@@ -5,9 +5,16 @@ defmodule Servy.Handler do
 
   @pages_path Path.expand("../../public", __DIR__)
 
+  alias Servy.{Request, Response}
+
   use Servy.Plugins.Rerwites
   use Servy.Routes
 
+  @doc """
+  Accept an HTTP request and return a response
+  """
+
+  @spec handle(String.t()) :: String.t()
   def handle(request) do
     request
     |> Servy.Parser.parse()
@@ -23,13 +30,15 @@ defmodule Servy.Handler do
 
   ## Examples
 
-      iex> Servy.Handler.route(%{ method: "PUT", path: "/", headers: [] })
-      %{response: %{body: "only GET, POST & DELETE are supported", status: 405} }
+      iex> Servy.Handler.route(%Servy.Request{ method: "PUT", path: "/", headers: [] })
+      %Servy.Request{response: %Servy.Response{body: "only GET, POST & DELETE are supported", status: 405} }
 
-      iex> Servy.Handler.route(%{ method: "POST", path: "/", headers: [] })
-      %{response: %{body: "/ not found", status: 404}, path: "/" }
+      iex> Servy.Handler.route(%Servy.Request{ method: "POST", path: "/", headers: [] })
+      %Servy.Request{response: %Servy.Response{body: "/ not found", status: 404}, path: "/" }
 
   """
+
+  @spec route(%Request{}) :: %Request{}
   def route(request) do
     case request do
       %{method: "GET"} ->
@@ -42,7 +51,9 @@ defmodule Servy.Handler do
         delete(request.path, request.headers)
 
       _ ->
-        %{response: %{status: 405, body: "only GET, POST & DELETE are supported"}}
+        %Request{
+          response: %Response{status: 405, body: "only GET, POST & DELETE are supported"}
+        }
     end
   end
 
@@ -51,25 +62,26 @@ defmodule Servy.Handler do
 
   ## Examples
 
-      iex> Servy.Handler.format(%{response: %{status: 200, body: "test" }})
+      iex> Servy.Handler.format(%Servy.Request{response: %Servy.Response{status: 200, body: "test" }})
       "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 4\n\ntest\n"
 
-      iex> Servy.Handler.format(%{response: %{status: 500, body: "Errør" }})
+      iex> Servy.Handler.format(%Servy.Request{response: %Servy.Response{status: 500, body: "Errør" }})
       "HTTP/1.1 500 Internal Server Error\nContent-Type: text/html\nContent-Length: 6\n\nErrør\n"
 
 
   """
-
-  def format(%{:response => response}) do
+  @spec format(%Request{}) :: String.t()
+  def format(%Request{:response => response}) do
     """
     HTTP/1.1 #{response.status} #{status_reason(response.status)}
     Content-Type: text/html
-    Content-Length: #{byte_size(response[:body])}
+    Content-Length: #{byte_size(response.body)}
 
-    #{response[:body]}
+    #{response.body}
     """
   end
 
+  @spec status_reason(number) :: String.t()
   defp status_reason(code) do
     %{
       200 => "OK",

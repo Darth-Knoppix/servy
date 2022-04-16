@@ -5,11 +5,13 @@ defmodule Servy.Routes do
   defmacro __using__(_opts) do
     quote do
       def get("/coffee", _headers) do
-        %{response: %{status: 200, body: "Espresso, Latte, Cappuccino"}}
+        %Servy.Request{
+          response: %Servy.Response{status: 200, body: "Espresso, Latte, Cappuccino"}
+        }
       end
 
       def get("/coffee/" <> id, _headers) do
-        %{response: %{status: 200, body: "Coffee: #{id}"}}
+        %Servy.Request{response: %Servy.Response{status: 200, body: "Coffee: #{id}"}}
       end
 
       @doc """
@@ -24,24 +26,33 @@ defmodule Servy.Routes do
       end
 
       def handle_file({:ok, content}, path, _headers),
-        do: %{response: %{status: 200, body: content}}
+        do: %Servy.Request{response: %Servy.Response{status: 200, body: content}}
 
       def handle_file({:error, :enoent}, path, _headers),
-        do: %{response: %{status: 404, body: "#{path} not found"}, path: path}
+        do: %Servy.Request{
+          response: %Servy.Response{status: 404, body: "#{path} not found"},
+          path: path
+        }
 
       def handle_file({:error, reason}, path, _headers),
-        do: %{status: 500, body: "Something went wrong"}
+        do: %Servy.Request{response: %Servy.Response{status: 500, body: "Something went wrong"}}
 
       def post("/coffee", _headers) do
-        %{response: %{status: 501, body: ""}}
+        %Servy.Request{response: %Servy.Response{status: 501, body: ""}}
       end
 
       def post(path, _headers) do
-        %{response: %{status: 404, body: "#{path} not found"}, path: path}
+        %Servy.Request{
+          response: %Servy.Response{status: 404, body: "#{path} not found"},
+          path: path
+        }
       end
 
       def delete(path, _headers) do
-        %{response: %{status: 404, body: "#{path} not found"}, path: path}
+        %Servy.Request{
+          response: %Servy.Response{status: 404, body: "#{path} not found"},
+          path: path
+        }
       end
     end
   end

@@ -1,9 +1,12 @@
 defmodule Servy.Plugins do
   require Logger
 
+  alias Servy.{Request, Response}
+
   def log(request), do: IO.inspect(request)
 
   @doc ~S"""
+  Logs a debug message for 404 status
 
   ## Examples
 
@@ -13,7 +16,7 @@ defmodule Servy.Plugins do
       iex> Servy.Plugins.track(%{response: %{status: 200}, path: "/"})
       %{path: "/", response: %{status: 200}}
   """
-  def track(%{response: %{status: 404}, path: path} = request) do
+  def track(%Request{response: %Response{status: 404}, path: path} = request) do
     Logger.debug("#{path} wasn't found!")
     request
   end

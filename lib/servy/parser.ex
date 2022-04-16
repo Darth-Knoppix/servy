@@ -3,6 +3,7 @@ defmodule Servy.Parser do
   Parse an HTTP request to pull out important parts like method,
   protocol, path, headers and body
   """
+  @spec parse(String.t()) :: map()
   def parse(request) do
     lines = String.split(request, "\n")
     [request_line | headers_and_body] = lines
@@ -18,11 +19,16 @@ defmodule Servy.Parser do
       iex> Servy.Handler.parse_request_line("HTTP/1.1 200 OK")
       %{method: "HTTP/1.1", path: "200", protocol: "OK"}
   """
+  @spec parse_request_line(String.t()) :: map()
   def parse_request_line(request_line) do
     [method, path, protocol] = String.split(request_line, " ")
     %{method: method, path: path, protocol: protocol}
   end
 
+  @doc ~S"""
+  Parse header list into map
+  """
+  @spec parse_headers(list(String.t())) :: map()
   def parse_headers(headers_and_body) do
     {raw_headers, [_ | raw_body]} =
       Enum.split_with(headers_and_body, fn x -> String.length(x) != 0 end)
