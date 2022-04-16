@@ -15,8 +15,8 @@ defmodule Servy.Parser do
 
   ## Examples
 
-    iex> Servy.Handler.parse_request_line("HTTP/1.1 200 OK")
-    %{method: "HTTP/1.1", path: "200", protocol: "OK"}
+      iex> Servy.Handler.parse_request_line("HTTP/1.1 200 OK")
+      %{method: "HTTP/1.1", path: "200", protocol: "OK"}
   """
   def parse_request_line(request_line) do
     [method, path, protocol] = String.split(request_line, " ")
