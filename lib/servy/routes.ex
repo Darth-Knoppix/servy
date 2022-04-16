@@ -1,6 +1,12 @@
 defmodule Servy.Routes do
   defmacro __using__(_opts) do
     quote do
+      def rewrite_path(%{path: "/drinks"} = request) do
+        %{request | path: "/coffee"}
+      end
+
+      def rewrite_path(request), do: request
+
       def get("/coffee", _headers) do
         %{response: %{status: 200, body: "Espresso, Latte, Cappuccino"}}
       end
