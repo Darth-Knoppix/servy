@@ -43,18 +43,44 @@ defmodule Servy.Handler do
     %{headers: headers, body: Enum.join(raw_body, "\n")}
   end
 
+  @doc ~S"""
+
+  Match on a route given the method and path
+
+  ## Examples
+
+    iex> Servy.Handler.route(%{ method: "PUT", path: "/", headers: [] })
+    %{response: %{body: "only GET and POST are supported", status: 405}}
+
+    iex> Servy.Handler.route(%{ method: "POST", path: "/", headers: [] })
+    %{response: %{body: "/ not found", status: 404}}
+
+  """
   def route(request) do
-    cond do
+    case request do
       %{method: "GET"} ->
         get(request.path, request.headers)
 
       %{method: "POST"} ->
         post(request.path, request.headers)
 
-      true ->
+      _ ->
         %{response: %{status: 405, body: "only GET and POST are supported"}}
     end
   end
+
+  @doc ~S"""
+  Format a map into an HTTP response
+
+  ## Examples
+
+    iex> Servy.Handler.format(%{response: %{status: 200, body: "test" }})
+    "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 4\n\ntest\n"
+
+    iex> Servy.Handler.format(%{response: %{status: 500, body: "Errør" }})
+    "HTTP/1.1 500 Internal Server Error\nContent-Type: text/html\nContent-Length: 6\n\nErrør\n"
+
+  """
 
   def format(%{:response => response}) do
     """
