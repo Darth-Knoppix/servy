@@ -16,7 +16,7 @@ defmodule Servy.Routes do
       end
 
       def get(path, _headers) do
-        %{response: %{status: 404, body: "#{path} not found"}}
+        %{response: %{status: 404, body: "#{path} not found"}, path: path}
       end
 
       def post("/coffee", _headers) do
@@ -24,7 +24,7 @@ defmodule Servy.Routes do
       end
 
       def post(path, _headers) do
-        %{response: %{status: 404, body: "#{path} not found"}}
+        %{response: %{status: 404, body: "#{path} not found"}, path: path}
       end
     end
   end

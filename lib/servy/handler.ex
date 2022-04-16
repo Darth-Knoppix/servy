@@ -1,4 +1,6 @@
 defmodule Servy.Handler do
+  require Logger
+
   use Servy.Routes
 
   def handle(request) do
@@ -7,6 +9,7 @@ defmodule Servy.Handler do
     |> rewrite_path
     |> log
     |> route
+    |> track
     |> format
   end
 
@@ -69,6 +72,13 @@ defmodule Servy.Handler do
         %{response: %{status: 405, body: "only GET and POST are supported"}}
     end
   end
+
+  def track(%{response: %{status: 404}, path: path} = request) do
+    Logger.debug("#{path} wasn't found!")
+    request
+  end
+
+  def track(request), do: request
 
   @doc ~S"""
   Format a map into an HTTP response
