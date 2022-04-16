@@ -19,7 +19,12 @@ defmodule Servy.Routes do
       Try load a static file or fallback to 404
       """
       def get(path, _headers) do
-        case File.read("public#{path}") do
+        result =
+          Path.expand("../../public", __DIR__)
+          |> Path.join(path)
+          |> File.read()
+
+        case result do
           {:ok, content} ->
             %{response: %{status: 200, body: content}}
 
