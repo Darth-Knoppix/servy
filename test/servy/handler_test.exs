@@ -37,6 +37,24 @@ defmodule ServyHandlerTest do
       assert Servy.Handler.handle(make_get_request("/coffee/101")) == expected_response
     end
 
+    test "static html request" do
+      expected_response = """
+      HTTP/1.1 200 OK
+      Content-Type: text/html
+      Content-Length: 79
+
+      <html>
+        <body>
+          <h1>About</h1>
+          <p>A little about</p>
+        </body>
+      </html>
+
+      """
+
+      assert Servy.Handler.handle(make_get_request("/about.html")) == expected_response
+    end
+
     test "unknown route" do
       expected_response = """
       HTTP/1.1 404 Not Found

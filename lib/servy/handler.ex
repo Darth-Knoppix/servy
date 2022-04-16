@@ -7,7 +7,6 @@ defmodule Servy.Handler do
     request
     |> parse
     |> rewrite_path
-    |> log
     |> route
     |> track
     |> format
@@ -54,10 +53,10 @@ defmodule Servy.Handler do
   ## Examples
 
     iex> Servy.Handler.route(%{ method: "PUT", path: "/", headers: [] })
-    %{response: %{body: "only GET and POST are supported", status: 405}}
+    %{response: %{body: "only GET, POST & DELETE are supported", status: 405} }
 
     iex> Servy.Handler.route(%{ method: "POST", path: "/", headers: [] })
-    %{response: %{body: "/ not found", status: 404}}
+    %{response: %{body: "/ not found", status: 404}, path: "/" }
 
   """
   def route(request) do
@@ -68,8 +67,11 @@ defmodule Servy.Handler do
       %{method: "POST"} ->
         post(request.path, request.headers)
 
+      %{method: "DELETE"} ->
+        delete(request.path, request.headers)
+
       _ ->
-        %{response: %{status: 405, body: "only GET and POST are supported"}}
+        %{response: %{status: 405, body: "only GET, POST & DELETE are supported"}}
     end
   end
 
