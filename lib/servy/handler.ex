@@ -1,8 +1,11 @@
 defmodule Servy.Handler do
-  require Logger
+  @moduledoc """
+  Handle simple HTTP/1.1 requests
+  """
 
   @pages_path Path.expand("../../public", __DIR__)
 
+  use Servy.Plugins.Rerwites
   use Servy.Routes
 
   def handle(request) do
@@ -10,11 +13,9 @@ defmodule Servy.Handler do
     |> parse
     |> rewrite_path
     |> route
-    |> track
+    |> Servy.Plugins.track()
     |> format
   end
-
-  def log(request), do: IO.inspect(request)
 
   def parse(request) do
     lines = String.split(request, "\n")
@@ -76,13 +77,6 @@ defmodule Servy.Handler do
         %{response: %{status: 405, body: "only GET, POST & DELETE are supported"}}
     end
   end
-
-  def track(%{response: %{status: 404}, path: path} = request) do
-    Logger.debug("#{path} wasn't found!")
-    request
-  end
-
-  def track(request), do: request
 
   @doc ~S"""
   Format a map into an HTTP response
