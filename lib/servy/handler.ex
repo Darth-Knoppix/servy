@@ -42,13 +42,13 @@ defmodule Servy.Handler do
   def route(request) do
     case request do
       %{method: "GET"} ->
-        get(request.path, request.headers)
+        get(request.path, request)
 
       %{method: "POST"} ->
-        post(request.path, request.headers)
+        post(request.path, request)
 
       %{method: "DELETE"} ->
-        delete(request.path, request.headers)
+        delete(request.path, request)
 
       _ ->
         %Request{

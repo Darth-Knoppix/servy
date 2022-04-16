@@ -4,13 +4,13 @@ defmodule Servy.Routes do
   """
   defmacro __using__(_opts) do
     quote do
-      def get("/coffee", _headers) do
+      def get("/coffee", _request) do
         %Servy.Request{
           response: %Servy.Response{status: 200, body: "Espresso, Latte, Cappuccino"}
         }
       end
 
-      def get("/coffee/" <> id, _headers) do
+      def get("/coffee/" <> id, _request) do
         %Servy.Request{response: %Servy.Response{status: 200, body: "Coffee: #{id}"}}
       end
 
@@ -25,30 +25,38 @@ defmodule Servy.Routes do
           |> handle_file(path, headers)
       end
 
-      def handle_file({:ok, content}, path, _headers),
+      def handle_file({:ok, content}, path, _request),
         do: %Servy.Request{response: %Servy.Response{status: 200, body: content}}
 
-      def handle_file({:error, :enoent}, path, _headers),
+      def handle_file({:error, :enoent}, path, _request),
         do: %Servy.Request{
           response: %Servy.Response{status: 404, body: "#{path} not found"},
           path: path
         }
 
-      def handle_file({:error, reason}, path, _headers),
+      def handle_file({:error, reason}, path, _request),
         do: %Servy.Request{response: %Servy.Response{status: 500, body: "Something went wrong"}}
 
-      def post("/coffee", _headers) do
-        %Servy.Request{response: %Servy.Response{status: 501, body: ""}}
+      @doc """
+      Create a new Coffee order
+      """
+      def post("/coffee", %Servy.Request{params: params}) do
+        %Servy.Request{
+          response: %Servy.Response{
+            status: 201,
+            body: "Made a coffee #{params["name"]} with #{params["milk"]} milk"
+          }
+        }
       end
 
-      def post(path, _headers) do
+      def post(path, _request) do
         %Servy.Request{
           response: %Servy.Response{status: 404, body: "#{path} not found"},
           path: path
         }
       end
 
-      def delete(path, _headers) do
+      def delete(path, _request) do
         %Servy.Request{
           response: %Servy.Response{status: 404, body: "#{path} not found"},
           path: path
