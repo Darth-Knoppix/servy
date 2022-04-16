@@ -73,25 +73,11 @@ defmodule Servy.Handler do
   @spec format(%Request{}) :: String.t()
   def format(%Request{:response => response}) do
     """
-    HTTP/1.1 #{response.status} #{status_reason(response.status)}
+    HTTP/1.1 #{Response.status_message(response.status)}
     Content-Type: text/html
     Content-Length: #{byte_size(response.body)}
 
     #{response.body}
     """
-  end
-
-  @spec status_reason(number) :: String.t()
-  defp status_reason(code) do
-    %{
-      200 => "OK",
-      201 => "Created",
-      401 => "Unauthorized",
-      403 => "Forbidden",
-      404 => "Not Found",
-      405 => "Method Not Allowed",
-      500 => "Internal Server Error",
-      501 => "Not Implemented"
-    }[code]
   end
 end
