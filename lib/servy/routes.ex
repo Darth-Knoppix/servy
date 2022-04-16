@@ -20,7 +20,7 @@ defmodule Servy.Routes do
       """
       def get(path, headers) do
         result =
-          Path.expand("../../public", __DIR__)
+          @pages_path
           |> Path.join(path)
           |> File.read()
           |> handle_file(path, headers)

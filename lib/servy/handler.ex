@@ -1,6 +1,8 @@
 defmodule Servy.Handler do
   require Logger
 
+  @pages_path Path.expand("../../public", __DIR__)
+
   use Servy.Routes
 
   def handle(request) do
