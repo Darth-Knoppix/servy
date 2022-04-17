@@ -24,10 +24,21 @@ defmodule Servy.Controllers.Coffee do
   """
   @spec show(%Servy.Request{}, map()) :: %Servy.Request{}
   def show(request, %{id: id}) do
-    %Request{
-      request
-      | response: %Response{status: 200, body: "Coffee: #{id}"}
-    }
+    coffee = Coffee.get_order(id)
+
+    case coffee do
+      nil ->
+        %Request{
+          request
+          | response: %Response{status: 404, body: "Coffee not found"}
+        }
+
+      _ ->
+        %Request{
+          request
+          | response: %Response{status: 200, body: "Coffee: #{coffee.name}, Milk: #{coffee.milk}"}
+        }
+    end
   end
 
   @doc """

@@ -25,13 +25,13 @@ defmodule ServyHandlerTest do
       assert Servy.Handler.handle(make_get_request("/coffee")) == expected_response
     end
 
-    test "coffee with id" do
+    test "coffee with an invalid id" do
       expected_response = """
-      HTTP/1.1 200 OK
+      HTTP/1.1 404 Not Found
       Content-Type: text/html
-      Content-Length: 11
+      Content-Length: 16
 
-      Coffee: 101
+      Coffee not found
       """
 
       assert Servy.Handler.handle(make_get_request("/coffee/101")) == expected_response

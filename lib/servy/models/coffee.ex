@@ -24,8 +24,13 @@ defmodule Servy.Models.Coffee do
       %Servy.Models.Coffee{id: 1, name: "Espresso", milk: "no"}
 
   """
-  @spec get_order(integer()) :: %Servy.Models.Coffee{}
-  def get_order(id) do
+  @spec get_order(pos_integer()) :: %Servy.Models.Coffee{} | nil
+  def get_order(id) when is_integer(id) do
     Enum.find(list_all(), fn x -> x.id == id end)
+  end
+
+  @spec get_order(String.t()) :: %Servy.Models.Coffee{} | nil
+  def get_order(id) when is_binary(id) do
+    String.to_integer(id) |> get_order
   end
 end

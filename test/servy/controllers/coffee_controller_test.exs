@@ -15,4 +15,17 @@ defmodule ServyControllersCoffeeTest do
       assert Servy.Controllers.Coffee.index(%Servy.Request{}) == response
     end
   end
+
+  describe "show/2" do
+    test "returns a valid result" do
+      response = %Servy.Request{
+        response: %Servy.Response{
+          body: "Coffee: Espresso, Milk: no",
+          status: 200
+        }
+      }
+
+      assert Servy.Controllers.Coffee.show(%Servy.Request{}, %{id: "1"}) == response
+    end
+  end
 end
