@@ -1,5 +1,5 @@
 defmodule ServyParserTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Parser
 
   describe "parse_headers/1" do

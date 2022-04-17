@@ -1,5 +1,5 @@
 defmodule ServyPluginsTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Plugins
 
   describe "track/1" do

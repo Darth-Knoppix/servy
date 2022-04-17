@@ -1,5 +1,5 @@
 defmodule ServyControllersCoffeeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Controllers.Coffee
 
   defp remove_whitespace(text) do

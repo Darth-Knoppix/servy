@@ -1,5 +1,5 @@
 defmodule ServyHandlerTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Handler
 
   defp make_get_request(path) do

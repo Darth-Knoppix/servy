@@ -1,5 +1,5 @@
 defmodule ServyModelsCoffeeTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   doctest Servy.Models.Coffee
 
   describe "get_order/1" do
