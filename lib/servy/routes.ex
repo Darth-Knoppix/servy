@@ -4,14 +4,14 @@ defmodule Servy.Routes do
   """
   defmacro __using__(_opts) do
     quote do
-      def get("/coffee", _request) do
-        %Servy.Request{
-          response: %Servy.Response{status: 200, body: "Espresso, Latte, Cappuccino"}
-        }
+      @spec get(String.t(), %Servy.Request{}) :: %Servy.Request{}
+      def get("/coffee", request) do
+        Servy.Controllers.Coffee.index(request)
       end
 
-      def get("/coffee/" <> id, _request) do
-        %Servy.Request{response: %Servy.Response{status: 200, body: "Coffee: #{id}"}}
+      def get("/coffee/" <> id, request) do
+        params = Map.put(request.params, :id, id)
+        Servy.Controllers.Coffee.show(request, params)
       end
 
       @doc """
@@ -37,16 +37,8 @@ defmodule Servy.Routes do
       def handle_file({:error, reason}, path, _request),
         do: %Servy.Request{response: %Servy.Response{status: 500, body: "Something went wrong"}}
 
-      @doc """
-      Create a new Coffee order
-      """
-      def post("/coffee", %Servy.Request{params: params}) do
-        %Servy.Request{
-          response: %Servy.Response{
-            status: 201,
-            body: "Made a coffee #{params["name"]} with #{params["milk"]} milk"
-          }
-        }
+      def post("/coffee", %Servy.Request{params: params} = request) do
+        Servy.Controllers.Coffee.create(request, params)
       end
 
       def post(path, _request) do

@@ -4,7 +4,7 @@ defmodule ServyPluginsTest do
 
   describe "track/1" do
     test "returns request unmutated" do
-      Servy.Plugins.track(%Servy.Request{}) == %Servy.Request{}
+      assert Servy.Plugins.track(%Servy.Request{}) == %Servy.Request{}
     end
   end
 end
