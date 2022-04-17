@@ -2,6 +2,10 @@ defmodule Servy.Controllers.Coffee do
   alias Servy.{Request, Response}
   alias Servy.Models.Coffee
 
+  defp coffee_list_item(%{name: name, milk: milk}) do
+    "<li>#{name} with #{milk}</li>"
+  end
+
   @doc """
   Show all coffee orders
   """
@@ -10,7 +14,7 @@ defmodule Servy.Controllers.Coffee do
     items =
       Coffee.list_all()
       |> Enum.sort(fn x, y -> x.name <= y.name end)
-      |> Enum.map(fn %{name: name, milk: milk} -> "<li>#{name} with #{milk}</li>" end)
+      |> Enum.map(&coffee_list_item/1)
       |> Enum.join()
 
     %Request{
