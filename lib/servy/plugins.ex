@@ -17,7 +17,10 @@ defmodule Servy.Plugins do
       %{path: "/", response: %{status: 200}}
   """
   def track(%Request{response: %Response{status: 404}, path: path} = request) do
-    Logger.debug("#{path} wasn't found!")
+    if Mix.env() != :test do
+      Logger.debug("#{path} wasn't found!")
+    end
+
     request
   end
 
