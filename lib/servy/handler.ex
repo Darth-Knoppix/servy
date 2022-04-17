@@ -63,20 +63,20 @@ defmodule Servy.Handler do
   ## Examples
 
       iex> Servy.Handler.format(%Servy.Request{response: %Servy.Response{status: 200, body: "test" }})
-      "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 4\n\ntest\n"
+      "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\nContent-Length: 4\r\n\r\ntest\n"
 
       iex> Servy.Handler.format(%Servy.Request{response: %Servy.Response{status: 500, body: "Errør" }})
-      "HTTP/1.1 500 Internal Server Error\nContent-Type: text/html\nContent-Length: 6\n\nErrør\n"
+      "HTTP/1.1 500 Internal Server Error\r\nContent-Type: text/html\r\nContent-Length: 6\r\n\r\nErrør\n"
 
 
   """
   @spec format(%Request{}) :: String.t()
   def format(%Request{:response => response}) do
     """
-    HTTP/1.1 #{Response.status_message(response.status)}
-    Content-Type: text/html
-    Content-Length: #{byte_size(response.body)}
-
+    HTTP/1.1 #{Response.status_message(response.status)}\r
+    Content-Type: text/html\r
+    Content-Length: #{byte_size(response.body)}\r
+    \r
     #{response.body}
     """
   end

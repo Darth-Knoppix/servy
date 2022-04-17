@@ -7,8 +7,8 @@ defmodule Servy.Parser do
   """
   @spec parse(String.t()) :: map()
   def parse(request) do
-    [top | [body]] = String.split(request, "\n\n")
-    [request_line | headers] = String.split(top, "\n")
+    [top | [body]] = String.split(request, "\r\n\r\n")
+    [request_line | headers] = String.split(top, "\r\n")
 
     parsed_request = parse_request_line(request_line)
     headers = parse_headers(headers)
