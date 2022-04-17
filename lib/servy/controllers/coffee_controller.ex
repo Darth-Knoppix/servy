@@ -1,14 +1,21 @@
 defmodule Servy.Controllers.Coffee do
   alias Servy.{Request, Response}
+  alias Servy.Models.Coffee
 
   @doc """
   Show all coffee orders
   """
   @spec index(%Servy.Request{}) :: %Servy.Request{}
   def index(request) do
+    items =
+      Coffee.list_all()
+      |> Enum.sort(fn x, y -> x.name <= y.name end)
+      |> Enum.map(fn %{name: name, milk: milk} -> "<li>#{name} with #{milk}</li>" end)
+      |> Enum.join()
+
     %Request{
       request
-      | response: %Response{status: 200, body: "Espresso, Latte, Cappuccino"}
+      | response: %Response{status: 200, body: "<ul>#{items}</ul>"}
     }
   end
 
