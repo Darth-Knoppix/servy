@@ -6,6 +6,6 @@ defmodule Servy.Request do
             path: "",
             protocol: "",
             response: %Servy.Response{},
-            headers: [],
+            headers: %{},
             params: %{}
 end

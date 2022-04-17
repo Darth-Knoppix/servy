@@ -2,6 +2,8 @@ defmodule ServyControllersCoffeeTest do
   use ExUnit.Case, async: true
   doctest Servy.Controllers.Coffee
 
+  alias Servy.{Request, Response}
+
   defp remove_whitespace(text) do
     String.replace(text, ~r{\s}, "")
   end
@@ -23,14 +25,14 @@ defmodule ServyControllersCoffeeTest do
         </html>
         """)
 
-      expected_response = %Servy.Request{
-        response: %Servy.Response{
+      expected_response = %Request{
+        response: %Response{
           body: body,
           status: 200
         }
       }
 
-      result = Servy.Controllers.Coffee.index(%Servy.Request{})
+      result = Servy.Controllers.Coffee.index(%Request{})
 
       result = %{
         result
@@ -39,18 +41,28 @@ defmodule ServyControllersCoffeeTest do
 
       assert result == expected_response
     end
+
+    test "returns json correctly" do
+      body =
+        "[{\"complete\":false,\"id\":2,\"milk\":\"Soy\",\"name\":\"Cappuccino\"},{\"complete\":false,\"id\":1,\"milk\":\"no\",\"name\":\"Espresso\"},{\"complete\":false,\"id\":4,\"milk\":\"Cow\",\"name\":\"Flat White\"},{\"complete\":false,\"id\":3,\"milk\":\"Almond\",\"name\":\"Latte\"},{\"complete\":true,\"id\":5,\"milk\":\"Cow\",\"name\":\"Ling Black\"}]"
+
+      result =
+        Servy.Controllers.Coffee.index(%Request{headers: %{"Content-Type": "application/json"}})
+
+      assert result.response.body == body
+    end
   end
 
   describe "show/2" do
     test "returns a valid result" do
-      response = %Servy.Request{
-        response: %Servy.Response{
+      response = %Request{
+        response: %Response{
           body: "<h1>Espresso</h1>\n<p>with no milk</p>\n",
           status: 200
         }
       }
 
-      assert Servy.Controllers.Coffee.show(%Servy.Request{}, %{id: "1"}) == response
+      assert Servy.Controllers.Coffee.show(%Request{}, %{id: "1"}) == response
     end
   end
 end

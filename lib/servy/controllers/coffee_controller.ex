@@ -20,6 +20,19 @@ defmodule Servy.Controllers.Coffee do
   Show all coffee orders
   """
   @spec index(%Servy.Request{}) :: %Servy.Request{}
+  def index(%Request{headers: %{"Content-Type": "application/json"}} = request) do
+    orders =
+      Coffee.list_all()
+      |> Enum.sort(fn x, y -> x.name <= y.name end)
+
+    body = Jason.encode!(orders)
+
+    %Request{
+      request
+      | response: %Response{body: body, headers: %{"Content-Type": "application/json"}}
+    }
+  end
+
   def index(request) do
     orders =
       Coffee.list_all()

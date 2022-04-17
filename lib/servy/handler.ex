@@ -72,9 +72,15 @@ defmodule Servy.Handler do
   """
   @spec format(%Request{}) :: String.t()
   def format(%Request{:response => response}) do
+    headers =
+      response.headers
+      |> Enum.map(fn {key, value} -> "#{key}: #{value}\r" end)
+      |> Enum.sort()
+      |> Enum.join("\n")
+
     """
     HTTP/1.1 #{Response.status_message(response.status)}\r
-    Content-Type: text/html\r
+    #{headers}
     Content-Length: #{byte_size(response.body)}\r
     \r
     #{response.body}

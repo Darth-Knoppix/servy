@@ -1,4 +1,5 @@
 defmodule Servy.Models.Coffee do
+  @derive Jason.Encoder
   defstruct id: nil, milk: "Cow", name: "", complete: false
 
   @doc """
