@@ -4,10 +4,29 @@ defmodule ServyControllersCoffeeTest do
 
   describe "index/1" do
     test "returns a valid result" do
+      body = """
+      <html>
+        <h1>All coffee orders</h1>
+
+        <ul>
+
+            <li>Cappuccino with Soy</li>
+
+            <li>Espresso with no</li>
+
+            <li>Flat White with Cow</li>
+
+            <li>Latte with Almond</li>
+
+            <li>Ling Black with Cow</li>
+
+        </ul>
+      </html>
+      """
+
       response = %Servy.Request{
         response: %Servy.Response{
-          body:
-            "<ul><li>Cappuccino with Soy</li><li>Espresso with no</li><li>Flat White with Cow</li><li>Latte with Almond</li><li>Ling Black with Cow</li></ul>",
+          body: body,
           status: 200
         }
       }
@@ -20,7 +39,7 @@ defmodule ServyControllersCoffeeTest do
     test "returns a valid result" do
       response = %Servy.Request{
         response: %Servy.Response{
-          body: "Coffee: Espresso, Milk: no",
+          body: "<h1>Espresso</h1>\n<p>with no milk</p>\n",
           status: 200
         }
       }

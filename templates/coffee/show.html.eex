@@ -1,0 +1,2 @@
+<h1><%= coffee.name %></h1>
+<p>with <%= coffee.milk %> milk</p>

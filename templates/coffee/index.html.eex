@@ -1,0 +1,9 @@
+<html>
+  <h1>All coffee orders</h1>
+
+  <ul>
+    <%= for coffee <- orders do %>
+      <li><%= coffee.name %> with <%= coffee.milk %></li>
+    <% end %>
+  </ul>
+</html>

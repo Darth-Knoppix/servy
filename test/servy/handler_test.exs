@@ -17,9 +17,26 @@ defmodule ServyHandlerTest do
       expected_response = """
       HTTP/1.1 200 OK
       Content-Type: text/html
-      Content-Length: 144
+      Content-Length: 236
 
-      <ul><li>Cappuccino with Soy</li><li>Espresso with no</li><li>Flat White with Cow</li><li>Latte with Almond</li><li>Ling Black with Cow</li></ul>
+      <html>
+        <h1>All coffee orders</h1>
+
+        <ul>
+
+            <li>Cappuccino with Soy</li>
+
+            <li>Espresso with no</li>
+
+            <li>Flat White with Cow</li>
+
+            <li>Latte with Almond</li>
+
+            <li>Ling Black with Cow</li>
+
+        </ul>
+      </html>
+
       """
 
       assert Servy.Handler.handle(make_get_request("/coffee")) == expected_response

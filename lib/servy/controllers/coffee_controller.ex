@@ -2,8 +2,18 @@ defmodule Servy.Controllers.Coffee do
   alias Servy.{Request, Response}
   alias Servy.Models.Coffee
 
-  defp coffee_list_item(%{name: name, milk: milk}) do
-    "<li>#{name} with #{milk}</li>"
+  @templates_path Path.expand("../../../templates/coffee", __DIR__)
+
+  defp render(request, template, bindings \\ []) do
+    body =
+      @templates_path
+      |> Path.join(template)
+      |> EEx.eval_file(bindings, trim: true)
+
+    %Request{
+      request
+      | response: %Response{status: 200, body: body}
+    }
   end
 
   @doc """
@@ -11,16 +21,11 @@ defmodule Servy.Controllers.Coffee do
   """
   @spec index(%Servy.Request{}) :: %Servy.Request{}
   def index(request) do
-    items =
+    orders =
       Coffee.list_all()
       |> Enum.sort(fn x, y -> x.name <= y.name end)
-      |> Enum.map(&coffee_list_item/1)
-      |> Enum.join()
 
-    %Request{
-      request
-      | response: %Response{status: 200, body: "<ul>#{items}</ul>"}
-    }
+    render(request, "index.html.eex", orders: orders)
   end
 
   @doc """
@@ -38,10 +43,7 @@ defmodule Servy.Controllers.Coffee do
         }
 
       _ ->
-        %Request{
-          request
-          | response: %Response{status: 200, body: "Coffee: #{coffee.name}, Milk: #{coffee.milk}"}
-        }
+        render(request, "show.html.eex", coffee: coffee)
     end
   end
 
