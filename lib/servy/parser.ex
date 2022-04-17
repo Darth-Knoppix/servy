@@ -11,8 +11,14 @@ defmodule Servy.Parser do
     [request_line | headers] = String.split(top, "\n")
 
     parsed_request = parse_request_line(request_line)
+    headers = parse_headers(headers)
+    params = parse_params(headers["Content-Type"], body)
 
-    %Request{parsed_request | headers: parse_headers(headers), params: parse_params(body)}
+    %Request{
+      parsed_request
+      | headers: headers,
+        params: params
+    }
   end
 
   @doc ~S"""
@@ -20,8 +26,8 @@ defmodule Servy.Parser do
 
   ## Examples
 
-      iex> Servy.Handler.parse_request_line("HTTP/1.1 200 OK")
-      %{method: "HTTP/1.1", path: "200", protocol: "OK"}
+      iex> Servy.Parser.parse_request_line("HTTP/1.1 200 OK")
+      %Servy.Request{method: "HTTP/1.1", path: "200", protocol: "OK"}
   """
   @spec parse_request_line(String.t()) :: map()
   def parse_request_line(request_line) do
@@ -29,11 +35,12 @@ defmodule Servy.Parser do
     %Request{method: method, path: path, protocol: protocol}
   end
 
-  def parse_params(""), do: ""
-
-  def parse_params(params_string) do
+  @spec parse_params(String.t(), String.t()) :: map()
+  def parse_params("application/x-www-form-urlencoded", params_string) do
     params_string |> String.trim() |> URI.decode_query()
   end
+
+  def parse_params(_, _), do: %{}
 
   @doc ~S"""
   Parse header list into map
