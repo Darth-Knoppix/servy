@@ -1,4 +1,8 @@
 defmodule Servy.Api.User do
+  @moduledoc """
+  A mock user service that fetches data from another API using HTTPoison
+  """
+
   @base_url "https://jsonplaceholder.typicode.com/users/"
 
   def list_all() do
