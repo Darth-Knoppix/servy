@@ -19,6 +19,10 @@ defmodule Servy.Routes do
         Servy.Controllers.Coffee.index(request)
       end
 
+      def get("/coffee/recent/", request) do
+        Servy.Controllers.Coffee.recent_orders(request)
+      end
+
       def get("/coffee/" <> id, request) do
         params = Map.put(request.params, :id, id)
         Servy.Controllers.Coffee.show(request, params)

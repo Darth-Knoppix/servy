@@ -65,11 +65,23 @@ defmodule Servy.Controllers.Coffee do
   """
   @spec create(%Servy.Request{}, map()) :: %Servy.Request{}
   def create(request, %{"name" => name, "milk" => milk}) do
+    Servy.Api.Order.create_order(name, 1)
+
     %Request{
       request
       | response: %Response{
           status: 201,
           body: "Made a coffee #{name} with #{milk} milk"
+        }
+    }
+  end
+
+  def recent_orders(request) do
+    %Request{
+      request
+      | response: %Response{
+          status: 200,
+          body: Servy.Api.Order.most_recent_orders()
         }
     }
   end

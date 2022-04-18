@@ -45,6 +45,13 @@ defmodule Servy.Api.Order do
 
         send(sender, {:response, []})
         listen_loop([])
+
+      msg ->
+        if Mix.env() != :test do
+          Logger.error("Unknown message: #{inspect(msg)}")
+        end
+
+        listen_loop(state)
     end
   end
 
