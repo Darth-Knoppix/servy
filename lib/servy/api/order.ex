@@ -3,6 +3,8 @@ defmodule Servy.Api.Order do
   Creates orders in memory and keeps track of recent orders
   """
 
+  @name :order_service
+
   require Logger
 
   def start do
@@ -11,7 +13,8 @@ defmodule Servy.Api.Order do
     end
 
     pid = spawn(__MODULE__, :listen_loop, [[]])
-    Process.register(pid, :order_service)
+    Process.register(pid, @name)
+    pid
   end
 
   def listen_loop(state \\ []) do
@@ -46,7 +49,7 @@ defmodule Servy.Api.Order do
   end
 
   def create_order(name, amount) do
-    send(:order_service, {self(), :create_order, name, amount})
+    send(@name, {self(), :create_order, name, amount})
 
     receive do
       {:response, status} -> status
@@ -54,7 +57,7 @@ defmodule Servy.Api.Order do
   end
 
   def most_recent_orders() do
-    send(:order_service, {self(), :recent_orders})
+    send(@name, {self(), :recent_orders})
 
     receive do
       {:response, orders} -> orders
@@ -62,7 +65,7 @@ defmodule Servy.Api.Order do
   end
 
   def clear_recent_orders() do
-    send(:order_service, {self(), :clear_recent_orders})
+    send(@name, {self(), :clear_recent_orders})
 
     receive do
       {:response, orders} -> orders
