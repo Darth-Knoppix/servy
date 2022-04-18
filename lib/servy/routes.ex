@@ -51,6 +51,43 @@ defmodule Servy.Routes do
         Servy.Controllers.Coffee.create(request, params)
       end
 
+      @doc """
+      Simulate some long running tasks running async with Task
+      """
+      def post("/coffee/prepare", request) do
+        start = Time.utc_now()
+
+        Range.new(0, 5)
+        |> Enum.map(fn _x -> Task.async(&Servy.Controllers.Coffee.prepare/0) end)
+        |> Enum.map(&Task.await/1)
+
+        elapsed = Time.diff(Time.utc_now(), start, :second)
+
+        %Servy.Request{
+          request
+          | response: %Servy.Response{status: 200, body: "prepared in #{elapsed}s"}
+        }
+      end
+
+      @doc """
+      Simulate some long running tasks
+      """
+      def post("/coffee/prepare-old", request) do
+        start = Time.utc_now()
+
+        Servy.Controllers.Coffee.prepare()
+        Servy.Controllers.Coffee.prepare()
+        Servy.Controllers.Coffee.prepare()
+        Servy.Controllers.Coffee.prepare()
+
+        elapsed = Time.diff(Time.utc_now(), start, :second)
+
+        %Servy.Request{
+          request
+          | response: %Servy.Response{status: 200, body: "prepared in #{elapsed}s"}
+        }
+      end
+
       def post(path, _request) do
         %Servy.Request{
           response: %Servy.Response{status: 404, body: "#{path} not found"},

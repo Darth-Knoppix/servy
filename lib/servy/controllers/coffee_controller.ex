@@ -73,4 +73,10 @@ defmodule Servy.Controllers.Coffee do
         }
     }
   end
+
+  def prepare() do
+    :timer.sleep(1_000)
+
+    {:ok}
+  end
 end
