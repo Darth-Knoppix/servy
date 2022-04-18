@@ -3,10 +3,9 @@ defmodule ServyApiOrderTerst do
   alias Servy.Api.Order
 
   describe "order service" do
-    Order.start()
-
     setup do
-      Order.clear_recent_orders()
+      {:ok, order_pid} = Order.start_link([])
+      {:ok, order_service: order_pid}
     end
 
     test "initial state is empty" do

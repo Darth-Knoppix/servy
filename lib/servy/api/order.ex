@@ -12,12 +12,12 @@ defmodule Servy.Api.Order do
     defstruct cache_size: 3, orders: []
   end
 
-  def start do
+  def start_link(_args) do
     if Mix.env() != :test do
       Logger.info("Starting the order service")
     end
 
-    GenServer.start(__MODULE__, %State{}, name: @name)
+    GenServer.start_link(__MODULE__, %State{}, name: @name)
   end
 
   def create_order(name, amount) do

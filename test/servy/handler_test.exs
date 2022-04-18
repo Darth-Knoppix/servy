@@ -12,6 +12,11 @@ defmodule ServyHandlerTest do
     """
   end
 
+  setup do
+    {:ok, order_pid} = Servy.Api.Order.start_link([])
+    {:ok, order_service: order_pid}
+  end
+
   describe "handle/1" do
     test "coffee route" do
       expected_response = """

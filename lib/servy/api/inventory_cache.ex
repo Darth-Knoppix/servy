@@ -10,8 +10,8 @@ defmodule Servy.Api.InventoryCache do
 
   use GenServer
 
-  def start do
-    GenServer.start(__MODULE__, %{}, name: @name)
+  def start_link(_args) do
+    GenServer.start_link(__MODULE__, %{}, name: @name)
   end
 
   def get_inventory do
