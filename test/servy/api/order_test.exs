@@ -21,5 +21,15 @@ defmodule ServyApiOrderTerst do
 
       assert Order.most_recent_orders() == [{"Latte", 4}, {"Latte", 3}, {"Latte", 2}]
     end
+
+    test "clears correctly" do
+      Order.create_order("Latte", 1)
+
+      assert Order.most_recent_orders() == [{"Latte", 1}]
+
+      Order.clear_recent_orders()
+
+      assert Order.most_recent_orders() == []
+    end
   end
 end
