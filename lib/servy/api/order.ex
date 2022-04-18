@@ -3,6 +3,10 @@ defmodule Servy.Api.Order do
   Creates orders in memory and keeps track of recent orders
   """
 
+  @behaviour GenServer
+
+  use GenServer
+
   @name :order_service
 
   require Logger
@@ -12,47 +16,33 @@ defmodule Servy.Api.Order do
       Logger.info("Starting the order service")
     end
 
-    pid = spawn(__MODULE__, :listen_loop, [[]])
-    Process.register(pid, @name)
-    pid
+    GenServer.start(__MODULE__, [], name: @name)
   end
 
-  def listen_loop(state \\ []) do
-    if Mix.env() != :test do
-      Logger.info("Awaiting orders...")
-    end
-
-    receive do
-      {:call, sender, message} when is_pid(sender) ->
-        {response, new_state} = handle_call(message, state)
-        send(sender, {:response, response})
-        listen_loop(new_state)
-
-      {:cast, message} ->
-        new_state = handle_cast(message, state)
-        listen_loop(new_state)
-
-      message ->
-        if Mix.env() != :test do
-          Logger.error("Unknown message: #{inspect(message)}")
-        end
-
-        listen_loop(state)
-    end
+  def create_order(name, amount) do
+    GenServer.call(@name, {:create_order, name, amount})
   end
 
-  def handle_call({:create_order, name, amount}, state) do
+  def most_recent_orders() do
+    GenServer.call(@name, :recent_orders)
+  end
+
+  def clear_recent_orders() do
+    GenServer.cast(@name, :clear_recent_orders)
+  end
+
+  def handle_call({:create_order, name, amount}, _from, state) do
     if Mix.env() != :test do
       Logger.info("#{amount} x #{name} ordered")
     end
 
     recent = Enum.take(state, 2)
     new_state = [{name, amount} | recent]
-    {"order-#{:rand.uniform(100)}", new_state}
+    {:reply, "order-#{:rand.uniform(100)}", new_state}
   end
 
-  def handle_call(:recent_orders, state) do
-    {state, state}
+  def handle_call(:recent_orders, _from, state) do
+    {:reply, state, state}
   end
 
   def handle_cast(:clear_recent_orders, _state) do
@@ -60,30 +50,6 @@ defmodule Servy.Api.Order do
       Logger.info("Cleared recent orders")
     end
 
-    []
-  end
-
-  def create_order(name, amount) do
-    call(@name, {:create_order, name, amount})
-  end
-
-  def most_recent_orders() do
-    call(@name, :recent_orders)
-  end
-
-  def clear_recent_orders() do
-    cast(@name, :clear_recent_orders)
-  end
-
-  def call(pid, message) do
-    send(pid, {:call, self(), message})
-
-    receive do
-      {:response, response} -> response
-    end
-  end
-
-  def cast(pid, message) do
-    send(pid, {:cast, message})
+    {:noreply, []}
   end
 end
