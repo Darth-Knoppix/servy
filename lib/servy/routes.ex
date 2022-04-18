@@ -4,6 +4,16 @@ defmodule Servy.Routes do
   """
   defmacro __using__(_opts) do
     quote do
+      def get("/users", request) do
+        %Servy.Request{
+          request
+          | response: %Servy.Response{
+              body: Servy.Api.User.list_all(),
+              headers: %{"Content-Type": "application/json"}
+            }
+        }
+      end
+
       @spec get(String.t(), %Servy.Request{}) :: %Servy.Request{}
       def get("/coffee", request) do
         Servy.Controllers.Coffee.index(request)

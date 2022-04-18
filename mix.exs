@@ -22,7 +22,8 @@ defmodule Servy.MixProject do
   defp deps do
     [
       {:ex_doc, "~> 0.28", only: :dev, runtime: false},
-      {:jason, "~> 1.3.0"}
+      {:jason, "~> 1.3.0"},
+      {:httpoison, "~> 1.8"}
     ]
   end
 end
