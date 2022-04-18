@@ -39,8 +39,10 @@ defmodule Servy.Api.Order do
   # Server callbacks
 
   @impl true
-  def init(init_arg) do
-    {:ok, init_arg}
+  def init(state) do
+    # This could be populated from an external API
+    orders = []
+    {:ok, %State{state | orders: orders}}
   end
 
   @impl true
