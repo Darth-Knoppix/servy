@@ -15,11 +15,10 @@ defmodule Servy.HttpServer do
   def accept_loop(listen_socket) do
     {:ok, client_socket} = :gen_tcp.accept(listen_socket)
 
-    spawn(fn -> serve(client_socket) end)
+    pid = spawn(fn -> serve(client_socket) end)
+    :ok = :gen_tcp.controlling_process(client_socket, pid)
 
-    if Mix.env() != :test do
-      accept_loop(listen_socket)
-    end
+    accept_loop(listen_socket)
   end
 
   @doc """
